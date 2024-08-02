@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler
-from telegram.ext import filters
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 import requests
+import asyncio
 
 TOKEN = '7084287732:AAGte3fXYdH9_PHiMrSDLmNfOxwif5XYIYM'
 ADMIN_ID = 7049798779  # Admin's Telegram ID
@@ -52,6 +52,15 @@ async def main() -> None:
     # Start the Bot
     await application.run_polling()
 
+# Check if the script is run as the main module
 if __name__ == '__main__':
-    import asyncio
-    asyncio.run(main())
+    try:
+        # Check if an event loop is already running
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            print("An event loop is already running. Skipping asyncio.run()")
+            loop.create_task(main())
+        else:
+            asyncio.run(main())
+    except RuntimeError as e:
+        print(f"RuntimeError: {e}")
