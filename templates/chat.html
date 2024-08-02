@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Chat Room</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@3.1.9-1/crypto-js.js"></script>
+</head>
+<body>
+    <h1>Secure Chat Room</h1>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        var encryption_key = '{{ encryption_key }}'; // Pass the encryption key from server to client securely
+
+        socket.on('connect', function() {
+            socket.emit('join');
+        });
+
+        socket.on('message', function(data) {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            var encrypted_message = atob(data.message);
+            var decrypted_message = decryptMessage(encrypted_message);
+            document.getElementById('chat').innerHTML += '<p>' + data.user + ': ' + decrypted_message + '</p>';
+        });
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            var encrypted_message = encryptMessage(message);
+            socket.emit('message', {'message': encrypted_message});
+            document.getElementById('message').value = '';
+        }
+
+        function encryptMessage(message) {
+            var key = CryptoJS.enc.Base64.parse(encryption_key);
+            var encrypted = CryptoJS.AES.encrypt(message, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 });
+            return encrypted.toString();
+        }
+
+        function decryptMessage(encrypted_message) {
+            var key = CryptoJS.enc.Base64.parse(encryption_key);
+            var decrypted = CryptoJS.AES.decrypt(encrypted_message, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 });
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+    </script>
+</body>
+</html>
