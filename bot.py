@@ -4,7 +4,7 @@ import requests
 
 TOKEN = '7084287732:AAGte3fXYdH9_PHiMrSDLmNfOxwif5XYIYM'
 ADMIN_ID = 7049798779  # Admin's Telegram ID
-NGROK_URL = 'https://495f-100-42-182-93.ngrok-free.app'  # Replace with your ngrok URL
+NGROK_URL = 'https://94e4-100-42-182-93.ngrok-free.app'  # Replace with your ngrok URL
 
 def start(update: Update, context: CallbackContext) -> None:
     keyboard = [
