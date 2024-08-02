@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Chat Room</title>
+</head>
+<body>
+    <h2>Admin Panel</h2>
+    <h3>Pending Approvals</h3>
+    <ul>
+        {% for user in pending_users %}
+            <li>
+                {{ user }} 
+                <a href="{{ url_for('approve_user', username=user) }}">Approve</a> |
+                <a href="{{ url_for('revoke_user', username=user) }}">Revoke</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>Chat Room</h3>
+    <a href="/">Go to Chat Room</a>
+</body>
+</html>
