@@ -1,5 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext, MessageHandler, Filters
 import requests
 
 TOKEN = '7084287732:AAGte3fXYdH9_PHiMrSDLmNfOxwif5XYIYM'
@@ -41,12 +41,21 @@ def handle_message(update: Update, context: CallbackContext) -> None:
         update.message.reply_text("Send /start to initiate.")
 
 def main() -> None:
-    updater = Updater(TOKEN)
+    # Create the Updater and pass it your bot's token
+    updater = Updater(TOKEN, use_context=True)
+
+    # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
+
+    # Register handlers
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CallbackQueryHandler(button))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+
+    # Start the Bot
     updater.start_polling()
+
+    # Run the bot until you send a signal to stop
     updater.idle()
 
 if __name__ == '__main__':
